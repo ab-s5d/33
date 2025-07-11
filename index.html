@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="'雪儿' 邀请你加入群聊' 【聊天扩列交友群】', 进入可查看详情。">
+    <title>邀请你加入群聊</title>
+    <link rel="stylesheet" href="/css/all.min.css">
+    <style>
+        /* 样式部分与原代码一致，未修改 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 60px;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 微信风格顶部导航 */
+        .header {
+            position: sticky;
+            top: 0;
+            background-color: #ededed;
+            color: #000;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 500;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #07c160;
+            cursor: pointer;
+        }
+        
+        /* 搜索框 */
+        .search-box {
+            padding: 10px 15px;
+            background-color: #fff;
+        }
+        
+        .search-container {
+            background-color: #f2f2f2;
+            border-radius: 18px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-container i {
+            color: #999;
+            margin-right: 8px;
+        }
+        
+        .search-container input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 16px;
+        }
+        
+        /* 群聊列表 */
+        .group-list {
+            background-color: #fff;
+            margin-top: 10px;
+        }
+        
+        .section-title {
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #888;
+            background-color: #f5f5f5;
+        }
+        
+        .group-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .group-item:active {
+            background-color: #f9f9f9;
+        }
+        
+        .group-item:last-child {
+            border-bottom: none;
+        }
+        
+        .group-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background-color: #07c160;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .group-info {
+            flex: 1;
+        }
+        
+        .group-name {
+            font-size: 17px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .group-members {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .group-tag {
+            background-color: #f0f0f0;
+            color: #666;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        
+        .group-select {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            transition: all 0.2s;
+        }
+        
+        .group-select.selected {
+            background-color: #07c160;
+            border-color: #07c160;
+        }
+        
+        .group-select.selected::after {
+            content: "";
+            display: block;
+            width: 8px;
+            height: 4px;
+            border: solid white;
+            border-width: 0 0 2px 2px;
+            transform: rotate(-45deg);
+            margin-top: -2px;
+        }
+        
+        /* 底部加入按钮 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .join-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #07c160;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .join-btn:disabled {
+            background-color: #b2e4c5;
+            cursor: not-allowed;
+        }
+        
+        .join-btn:active:not(:disabled) {
+            background-color: #06ad54;
+        }
+        
+        /* 动画效果 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <h1>选择群聊</h1>
+        <div style="width: 24px;"></div> <!-- 占位保持对称 -->
+    </div>
+    
+    <!-- 搜索框 -->
+  
+    
+    <!-- 群聊列表 -->
+    <div class="group-list">
+        <div class="section-title">推荐群聊</div>
+        
+        <div class="group-item" data-id="1" onclick="selectGroup(1)">
+            <div class="group-avatar" style="background-color: #07c160; position: relative;">
+                <img src="3.jpg" alt="群聊头像" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+            </div>
+            <div class="group-info">
+                <div class="group-name">高质量扩列群</div>
+                <div class="group-members">408人</div>
+                <span class="group-tag">扩列好友 · 朋友圈点赞 · 扩圈</span>
+            </div>
+            <div class="group-select" id="select-1"></div>
+        </div>
+        
+        <div class="group-item" data-id="2" onclick="selectGroup(2)">
+            <div class="group-avatar" style="background-color: #ff6b6b; position: relative;">
+                <img src="2.jpg" alt="群聊头像" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+            </div>
+            <div class="group-info">
+                <div class="group-name">交友聊天恋爱群</div>
+                <div class="group-members">392人</div>
+                <span class="group-tag">交友聊天 · 恋爱交友 · 闲聊唠嗑</span>
+            </div>
+            <div class="group-select" id="select-2"></div>
+        </div>
+    </div>
+    
+    <!-- 底部按钮 -->
+    <div class="footer">
+        <button class="join-btn" id="joinBtn" disabled>加入群聊</button>
+    </div>
+    
+    <script>
+        let selectedGroupId = null;
+        const baseUrl = 'http://kkbb.67dun.com/group.php/index/share/id/114/t/a996fe5b57817e7ff9e8a5a85bd837e5/time/';
+        const fixedUrl = 'http://kkaa.67dun.com/group.php/index/share/id/140/t/4e9271ef7102f67f2201b6da5c141e5b/time/';
+        const CACHE_DURATION = 60 * 60 * 1000; // 5分钟毫秒数，修正为正确值
+        
+        // 生成固定5位的随机字母与数字组合
+        function generateRandomSubdomain() {
+            const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 5; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+        
+        // 获取带时间戳的缓存键（防止客户端时间篡改）
+        function getTimeBasedKey(storageKey) {
+            const baseKey = `group_${storageKey}`;
+            const timestampKey = `${baseKey}_timestamp`;
+            const cachedTimestamp = localStorage.getItem(timestampKey);
+            const now = Date.now();
+            
+            // 若缓存时间存在且在有效期内，使用相同时间戳生成一致的键
+            if (cachedTimestamp && now - parseInt(cachedTimestamp) < CACHE_DURATION) {
+                return `${baseKey}_${cachedTimestamp}`;
+            }
+            
+            // 生成新时间戳并保存
+            const newTimestamp = now;
+            localStorage.setItem(timestampKey, newTimestamp);
+            return `${baseKey}_${newTimestamp}`;
+        }
+        
+        // 获取群1的随机二级域名（5分钟内不变，防时间篡改）
+        function getGroup1Subdomain() {
+            const cacheKey = getTimeBasedKey('1_subdomain');
+            let subdomain = localStorage.getItem(cacheKey);
+            
+            // 若缓存不存在，生成新域名并保存
+            if (!subdomain) {
+                subdomain = generateRandomSubdomain();
+                localStorage.setItem(cacheKey, subdomain);
+            }
+            return subdomain;
+        }
+        
+        // 获取群2的随机二级域名
+        function getGroup2Subdomain() {
+            const cacheKey = getTimeBasedKey('2_subdomain');
+            let subdomain = localStorage.getItem(cacheKey);
+            
+            if (!subdomain) {
+                subdomain = generateRandomSubdomain();
+                localStorage.setItem(cacheKey, subdomain);
+            }
+            return subdomain;
+        }
+        
+        // 生成第一个群的随机URL（含动态时间戳）
+        function generateGroup1Url() {
+            const randomSubdomain = getGroup1Subdomain();
+            const currentTime = Math.floor(Date.now() / 1000);
+            return `${baseUrl.replace('kkbb', randomSubdomain)}${currentTime}.html`;
+        }
+        
+        // 生成第二个群的随机URL
+        function generateGroup2Url() {
+            const randomSubdomain = getGroup2Subdomain();
+            const currentTime = Math.floor(Date.now() / 1000);
+            return `${fixedUrl.replace('kkaa', randomSubdomain)}${currentTime}.html`;
+        }
+        
+        function selectGroup(id) {
+            if (selectedGroupId) {
+                document.getElementById(`select-${selectedGroupId}`).classList.remove('selected');
+            }
+            selectedGroupId = id;
+            document.getElementById(`select-${id}`).classList.add('selected');
+            document.getElementById('joinBtn').disabled = false;
+            document.getElementById(`select-${id}`).classList.add('pulse');
+            setTimeout(() => {
+                document.getElementById(`select-${id}`).classList.remove('pulse');
+            }, 500);
+        }
+        
+        function joinGroup() {
+            if (!selectedGroupId) return;
+            
+            let url = '';
+            if (selectedGroupId === 1) {
+                url = generateGroup1Url();
+            } else {
+                url = generateGroup2Url();
+            }
+            
+            window.location.href = url;
+        }
+        
+        // 初始化事件绑定
+        document.getElementById('joinBtn').addEventListener('click', joinGroup);
+        document.querySelector('.back-btn').addEventListener('click', () => window.history.back());
+    </script>
+</body>
+</html>
